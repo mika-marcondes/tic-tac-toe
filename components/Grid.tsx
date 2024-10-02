@@ -1,6 +1,8 @@
 import Touchable, { useGestureHandler } from "react-native-skia-gesture";
 import { useWindowDimensions } from "react-native";
 import { Group, Paint, Rect } from "@shopify/react-native-skia";
+import GridSelection from "./GridSelection";
+import { useSharedValue } from "react-native-reanimated";
 
 export const Grid = () => {
   const { width: windowWidth } = useWindowDimensions();
@@ -20,10 +22,15 @@ export const Grid = () => {
   const recWidth = gridSize / rowIndex;
   const recHeight = gridSize / colIndex;
 
+  const showCross = useSharedValue<undefined | boolean>(undefined);
+
   const gesture = useGestureHandler({
-    onStart: () => {
+    onStart: (touchInfo) => {
       "worklet";
-      console.log("ai");
+      console.log("ai", touchInfo);
+      console.log(gridSize);
+      console.log(showCross.value);
+      showCross.value = !showCross.value;
     },
   });
 
@@ -37,14 +44,24 @@ export const Grid = () => {
       {new Array(rowIndex).fill(0).map((_, i) => {
         return new Array(colIndex).fill(0).map((_, j) => {
           return (
-            <Touchable.Rect
-              {...gesture}
-              x={i * recWidth}
-              y={j * recHeight}
-              width={recWidth}
-              height={recHeight}
-              color={"lightgrey"}
-            />
+            <Group key={j}>
+              <Touchable.Rect
+                {...gesture}
+                x={i * recWidth}
+                y={j * recHeight}
+                width={recWidth}
+                height={recHeight}
+                color={"lightgrey"}
+              />
+              <Group
+                transform={[
+                  { translateX: i * recWidth },
+                  { translateY: j * recHeight },
+                ]}
+              >
+                <GridSelection cross={showCross} />
+              </Group>
+            </Group>
           );
         });
       })}

@@ -5,7 +5,7 @@ import { Grid } from "./components/Grid";
 export default function App() {
   return (
     <GestureHandlerRootView style={styles.container}>
-      <Grid></Grid>
+      <Grid />
     </GestureHandlerRootView>
   );
 }
