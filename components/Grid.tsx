@@ -1,10 +1,9 @@
-import Touchable from "react-native-skia-gesture";
+import Touchable, { useGestureHandler } from "react-native-skia-gesture";
 import { useWindowDimensions } from "react-native";
 import { Group, Paint, Rect } from "@shopify/react-native-skia";
-import { useMemo } from "react";
 
 export const Grid = () => {
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
 
   const padding = 20;
 
@@ -21,6 +20,13 @@ export const Grid = () => {
   const recWidth = gridSize / rowIndex;
   const recHeight = gridSize / colIndex;
 
+  const gesture = useGestureHandler({
+    onStart: () => {
+      "worklet";
+      console.log("ai");
+    },
+  });
+
   return (
     <Touchable.Canvas
       style={{
@@ -32,6 +38,7 @@ export const Grid = () => {
         return new Array(colIndex).fill(0).map((_, j) => {
           return (
             <Touchable.Rect
+              {...gesture}
               x={i * recWidth}
               y={j * recHeight}
               width={recWidth}
